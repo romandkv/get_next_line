@@ -12,9 +12,12 @@
 
 #include "get_next_line.h"
 
-int ft_fill(int fd, char **line, int nbr, char **stack)
+char	*ft_strdup(const char *s1);
+
+int ft_fill(int fd, char **line, char **stack)
 {
 	int len;
+	char *tmp;
 
 	len = 0;
 	while (stack[fd][len] != '\n' && !stack[fd][len])
@@ -29,7 +32,7 @@ int ft_fill(int fd, char **line, int nbr, char **stack)
 	else if (!stack[fd][len])
 	{
 		*line = ft_strdup(stack[fd]);
-		free(stack[fd]);
+		ft_strdel(&stack[fd]);
 		return (0);
 	}
 	return (1);
@@ -44,20 +47,25 @@ int get_next_line(const int fd, char **line)
 
 	if (!line || fd < 0)
 		return (-1);
-	while (nbr = read(fd, buff, BUFF_SIZE) > 0)
+	while ((nbr = read(fd, buff, BUFF_SIZE)) > 0)
 	{
 		buff[nbr] = '\0';
 		if (stack[fd] == NULL)
-			stack = ft_strnew(1);
-		tmp = ft_strjoin(stack, buff);
+			stack[fd] = ft_strnew(1);
+		tmp = ft_strjoin(stack[fd], buff);
 		free(stack[fd]);
 		stack[fd] = tmp;
-		if (ft_strchr(stack, '\n'))
+		if (ft_strchr(stack[fd], '\n'))
 			break ;
 	}
 	if (nbr < 0)
 		return (-1);
 	if (nbr == 0)
 		return (0);
-	return (ft_fill(fd, line, nbr, stack));
+	return (ft_fill(fd, line, stack));
+}
+
+int main()
+{
+	return (0);
 }
